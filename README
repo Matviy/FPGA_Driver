@@ -1,4 +1,4 @@
-Minimal PCI FPGA Driver, allows reading arbitrary registers via char device.
+Minimal Linux PCI FPGA Driver Module, allows reading arbitrary registers via char device.
 Usually, you'd just mmap() the PCI resource, but this is for fun.
 
 Example Output:
