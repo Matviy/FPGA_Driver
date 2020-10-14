@@ -3,7 +3,7 @@ Usually, you'd just mmap() the PCI resource, but this is for fun.
 
 Example Output:
 Register: CLOCK_LATCH_FREQ Value: 	 24999954
-Register: LED_FLASH_RATE Value: 		255
+Register: LED_FLASH_RATE Value: 	255
 Register: FAN_1_SPEED Value: 		 5000
 Register: FAN_2_SPEED Value: 		 5000
 Register: TEMP_SENSOR_LEFT Value:   	   45
