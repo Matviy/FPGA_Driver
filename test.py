@@ -7,11 +7,11 @@ class Register:
       self.signed = signed
 
 registers = {
-	"CLOCK_LATCH_FREQ": Register("CLOCK_LATCH_FREQ",0x100,  4, "little", False),
+	"CLOCK_LATCH_FREQ":     Register("CLOCK_LATCH_FREQ",0x100,  4, "little", False),
 	"LED_FLASH_RATE":	Register("LED_FLASH_RATE",  0x104,  2, "little", False),
 	"FAN_1_SPEED": 		Register("FAN_1_SPEED",     0x106,  4, "little", False),
 	"FAN_2_SPEED": 		Register("FAN_2_SPEED",     0x10A,  4, "little", False),
-	"SCRATCH": 		    Register("SCRATCH",         0x120,  4, "little", False)
+	"SCRATCH": 		Register("SCRATCH",         0x120,  4, "little", False)
 }
 
 
