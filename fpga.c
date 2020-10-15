@@ -21,26 +21,31 @@ MODULE_DEVICE_TABLE(pci, fpga_pci_tbl);
 // Used to retrieve data from the device.
 ssize_t fpga_read(struct file * fl, char __user * buf, size_t count, loff_t * f_pos) {
 	
-	printk("Fpga: fpga_read(): read position: %lld count: %ld\n", fl->f_pos, count);
+	printk("Fpga: fpga_read(): read position: %lld count: %ld\n", *f_pos, count);
+	
+	// Make sure we're reading with our resource region
+	if(*f_pos > pci_resource_len(fpga.pci_dev, BAR_0) - 4){
+		printk("Fpga: fpga_read(): Error. Attempted to read outside of BAR region.\n");
+		return -EINVAL;
+	}
 	
 	// Limit reads to long.
 	if(count > 4)
 		count = 4;
 	
 	if (count == 4){
-		unsigned long val = readl(fpga.pci_regs + fl->f_pos);
+		unsigned long val = readl(fpga.pci_regs + *f_pos);
 		copy_to_user(buf, &val, count);
 	}
 	else if (count == 2){
-		unsigned short val = readw(fpga.pci_regs + fl->f_pos);
+		unsigned short val = readw(fpga.pci_regs + *f_pos);
 		copy_to_user(buf, &val, count);
 	}
 	else if(count == 1){
-		unsigned char val = readb(fpga.pci_regs + fl->f_pos);
+		unsigned char val = readb(fpga.pci_regs + *f_pos);
 		copy_to_user(buf, &val, count);
-	}
-	else{
-		printk("Fpga: fpga_read(): Invalid read count: %lld count: %ld\n", fl->f_pos, count);
+	}else{
+		printk("Fpga: fpga_read(): Invalid read count: %lld count: %ld\n", *f_pos, count);
 		return -EINVAL;
 	}
 	
@@ -48,6 +53,42 @@ ssize_t fpga_read(struct file * fl, char __user * buf, size_t count, loff_t * f_
 	
 	return count;
 	
+}
+
+ssize_t fpga_write(struct file *fl, const char __user *buf, size_t count, loff_t *f_pos){
+	
+	char kbuf[4];
+
+	printk("Fpga: fpga_write(): write position: %lld count: %ld\n", *f_pos, count);
+
+	// Make sure we're writing with our resource region
+	if(*f_pos > pci_resource_len(fpga.pci_dev, BAR_0) - 4){
+		printk("Fpga: fpga_write(): Error. Attempted to write outside of BAR region.\n");
+		return -EINVAL;
+	}
+
+	// Limit reads to long.
+	if(count > 4)
+		count = 4;
+	
+	// Copy up to 4 bytes from user space buffer.
+	copy_from_user(kbuf, buf, count);
+	
+	// Do the write depending on size.
+	if (count == 4)
+		writel(*(long*)buf, fpga.pci_regs + *f_pos);
+	else if (count == 2)
+		writew(*(short*)buf, fpga.pci_regs + *f_pos);
+	else if(count == 1)
+		writeb(*(char*)buf, fpga.pci_regs + *f_pos);
+	else{
+		printk("Fpga: fpga_write(): Invalid read count: %lld count: %ld\n", *f_pos, count);
+		return -EINVAL;
+	}
+
+	*f_pos += count;
+
+	return count;
 }
 
 loff_t fpga_llseek(struct file *filp, loff_t off, int from){
@@ -86,6 +127,7 @@ loff_t fpga_llseek(struct file *filp, loff_t off, int from){
 struct file_operations fops = {
 	.owner  = THIS_MODULE,
 	.read   = fpga_read,
+	.write  = fpga_write,
 	.llseek = fpga_llseek
 };
 

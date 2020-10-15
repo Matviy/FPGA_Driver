@@ -7,11 +7,11 @@ class Register:
       self.signed = signed
 
 registers = {
-	"CLOCK_LATCH_FREQ": Register("CLOCK_LATCH_FREQ",0x140,  4, "little", False),
-	"LED_FLASH_RATE":	Register("LED_FLASH_RATE",  0x144,  4, "little", False),
+	"CLOCK_LATCH_FREQ": Register("CLOCK_LATCH_FREQ",0x100,  4, "little", False),
+	"LED_FLASH_RATE":	Register("LED_FLASH_RATE",  0x104,  2, "little", False),
 	"FAN_1_SPEED": 		Register("FAN_1_SPEED",     0x106,  4, "little", False),
 	"FAN_2_SPEED": 		Register("FAN_2_SPEED",     0x10A,  4, "little", False),
-	"SCRATCH": 		    Register("SCRATCH",         0x130,  4, "little", False)
+	"SCRATCH": 		    Register("SCRATCH",         0x120,  4, "little", False)
 }
 
 
@@ -19,8 +19,8 @@ with open("char_device", "r+b") as file_fpga:
 
    # Test byte sequences
    write_tests = [
-	[0xAA, 0xBB, 0xCC, 0xDD],
-	[0x11, 0x22]
+      [0xAA, 0xBB, 0xCC, 0xDD],
+      [0x11, 0x22]
    ]
 
    print("Write Tests:")
