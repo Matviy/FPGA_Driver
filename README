@@ -1,7 +1,7 @@
 Minimal Linux PCI FPGA Driver Module, allows reading/writing arbitrary registers via char device.
 Usually, you'd just mmap() the PCI resource, but this is for fun.
 
-root@localhost:~/fpga_module# python3 read_fpga.py
+root@localhost:~/fpga_module# python3 test.py
 Write Tests:
 ['0xaa', '0xbb', '0xcc', '0xdd']
 ['0x11', '0x22', '0xcc', '0xdd']
